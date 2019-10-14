@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>魔镜魔镜问问我</title>
+
+    <style type="text/css">
+        #main{
+/*            background-color: red;*/
+            margin: 100px 30%;
+            align-content: center;
+        }
+        #main h1{
+            text-align: center;
+        }
+    </style>
+    <!-- Vue CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="main">
+        <h1>魔镜魔镜告诉我</h1>
+        <h4>提出你的问题吧<input v-model="question"></h4>
+        <h4>{{answer}}</h4>
+    </div>
+
+</body>
+<!-- axios 异步请求 -->
+<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+<!-- loadsh 频率限制 -->
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+<script>
+    var watchExampleVM=new Vue({
+        el:"#main",
+        data:{
+            question:'',
+            answer:'等待你问完毕就回答给你哦'
+        },
+        watch:{
+            //监听question  question改变的时候触发
+            question:function(newQuestion,oldQuestion){
+                this.answer= "等待你的输入.."
+                this.debouncedGetAnswer()
+            }
+        },
+        //频率限制
+        created:function(){
+            this.debouncedGetAnswer=_.debounce(this.getAnswer,500)
+            console.log(this)
+        },
+        methods:{
+            //方法 获得答案
+            getAnswer:function () {
+                //判断是不是问题
+                if(-1===this.question.indexOf('？')){
+                    this.answer="问题必须包含？哦"
+                    return
+                }
+
+                //过渡语句语句
+                this.answer="正在思考中。。。。"
+                
+                //向API进行请求 箭头函数 this
+                var vm=this
+                axios.get('https://yesno.wtf/api')
+                     .then(function(res){
+                        vm.answer=res.data.answer
+                     })
+                     .catch(function(erroe){
+                        vm.answer="请求API失败"+error
+                     })
+            }
+        }
+
+    })
+</script>
+</html>
