@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+    <!-- Vue CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue" type="text/javascript"></script>
+</head>
+<body  style="padding-left:20px;">
+    <div  id='app'>
+        <!-- 全局注册组件 -->
+        <h4>1.全局注册组件 可以多复用</h4>
+        <div id="componets-demo">
+            <!-- 使用自定义的组件 -->
+            <button-counter></button-counter>
+            <!-- 可以复用多次 -->
+            <button-counter></button-counter>
+            <button-counter></button-counter>
+        </div>
+
+        <!-- 局部注册组件 -->
+        <br><h4>2. 局部注册组件</h4>
+        <component-a></component-a>
+
+        <!-- props传递参数-->
+        <br><h4>3. 组件使用props传递数据</h4>
+        <props-component title="My journey with Vue"></props-component>
+    </div>
+    <!-- 监听子组件-->
+    <br><h4>4. 监听子组件</h4>
+    <div id="events-demo">
+        <div :style="{ fontSize: FontSize + 'em' }">
+            <event-listen
+            v-on:enlarge-text="FontSize += 0.1"
+            ></event-listen>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    /*定义一个组件  参数1：组件名字   全局注册*/
+    Vue.component('button-counter',{
+        //data必须为函数 每个返回一个副本
+        data: function(){
+            return {
+                count:0
+            }
+        },
+        template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+    })
+
+    //使用props传递数据
+    Vue.component('props-component', {
+        props: ['props_value'],
+        template: '<div>I\'m component use props. This is props value:{{props_value}}</div>'
+    })
+
+    /*局部注册 */
+    var componentA = {
+         template: '<div>局部注册组件的内容</div>'
+     }
+
+
+
+    /*监听子组件*/
+    Vue.component('event-listen', {
+        template: `
+            <div >
+                <button v-on:click="$emit('enlarge-text')">
+                    Enlarge text
+                </button>
+                <p>font</p>
+            </div>
+        `
+    })
+
+
+    new Vue({
+        el: '#events-demo',
+        data: {
+            FontSize: 1
+        }
+    })
+
+    var vm=new Vue({
+        el: "#app",
+        //使用局部注册组件
+        components: {
+            'component-a':componentA
+        }
+    });
+
+</script>
