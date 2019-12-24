@@ -123,3 +123,55 @@
 
     <test-input v-model="searchText"></test-input>
 ```
+#### 插槽分发内容 `<slot>` 
+> 在模版中使用<slot></slot>占位可以分发内容
+
+```HTML
+    <alert-box >
+        我是插进来的内容
+    </alert-box>
+```
+```javascript
+    Vue.component('alert-box',{
+        template:`
+            <div>
+                <strong>原有内容</strong>
+                <slot></slot>
+            </div>
+        `
+    })
+```
+
+#### 动态组件  is特性
+> 需要在不同组件之间进行动态转换 可以使用<component>元素的is特性
+
+```HTML
+<!-- 组件会在 `currentTabComponent` 改变时改变 -->
+<!-- currentTabComponent 可以是1.注册组件的名字  2.组件的选项对象-->
+<component v-bind:is="currentTabComponent"></component>
+```
+
+#### 解析DOM模版注意事项
+
+##### 元素内部有特殊限制
+> 对于哪些出现在内部的元素有特殊限制
+
+- <ul>
+- <ol>
+- <table>
+- <select>
+- ....
+
+##### 元素外部有特殊限制
+> 对于元素只能出现在特定的环境
+
+- <li>
+- <tr>
+- <option>
+- ...
+
+##### ! 以下来源排除
+
+- 字符串 (例如：template: '...')
+- 单文件组件 (.vue)
+- <script type="text/x-template">
